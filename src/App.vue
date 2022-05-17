@@ -1,44 +1,46 @@
 <template>
   <div id="container">
-    <input id="search" type="text" v-model="search" placeholder="Search">
+    <input id="search" type="text" v-model="this.search" placeholder="Search">
     <div v-if="filteredList.length > 0" class="sports" v-for="item in filteredList">
-      {{item}}
+      {{ item }}
     </div>
     <img v-else id="travolta" src="https://www.hyperui.dev/photos/confused-travolta.gif" alt="John Travolta confused">
   </div>
 </template>
 
 <script>
+import {computed, ref} from 'vue'
+
 export default {
-  name: 'App',
-  data: function () {
-    return {
-      search: "",
-      list: [
-        "Décathlon (H)",
-        "110m haies (F)",
-        "4x400m (F)",
-        "Poids (H)",
-        "France - Slovénie (Basket H)",
-        "Boxe - moins de 60 kg (F)",
-        "Canoë-kayak - K1 200m (H)",
-        "Omnium (H)",
-        "Keirin (F) Demi-finales",
-        "Australie - États-Unis (Football F)",
-      ]
-    }
-  },
-  computed: {
-    filteredList: function () {
-      return this.list.filter(item => {
-       return this.cleanString(item).includes(this.cleanString(this.search))
-      })
-    }
-  },
-  methods:{
-    cleanString(str){
+  setup() {
+    const search = ref("")
+    const list = [
+      "Décathlon (H)",
+      "110m haies (F)",
+      "4x400m (F)",
+      "Poids (H)",
+      "France - Slovénie (Basket H)",
+      "Boxe - moins de 60 kg (F)",
+      "Canoë-kayak - K1 200m (H)",
+      "Omnium (H)",
+      "Keirin (F) Demi-finales",
+      "Australie - États-Unis (Football F)",
+    ]
+
+    function cleanString(str) {
       return str.normalize('NFD')
           .replace(/([\u0300-\u036f]|[^\da-zA-Z])/g, '').toLowerCase()
+    }
+
+    const filteredList = computed(() => {
+      return list.filter(item => {
+        return cleanString(item).includes(cleanString(search.value))
+      })
+    })
+
+    return {
+      search,
+      filteredList
     }
   }
 }
@@ -47,18 +49,20 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
-body{
-  font-family: "Roboto Light",sans-serif;
+body {
+  font-family: "Roboto Light", sans-serif;
   margin: 0;
 }
-#container{
+
+#container {
   max-width: 1024px;
   margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-#search{
+
+#search {
   font-family: inherit;
   margin-top: 40px;
   margin-bottom: 30px;
@@ -71,7 +75,7 @@ body{
   font-weight: lighter;
 }
 
-.sports{
+.sports {
   font-size: 14px;
   font-weight: lighter;
   width: 40%;
@@ -82,7 +86,8 @@ body{
   margin-bottom: 10px;
   text-align: center;
 }
-#travolta{
+
+#travolta {
   border-radius: 10px;
 }
 </style>
